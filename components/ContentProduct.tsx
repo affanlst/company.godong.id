@@ -20,7 +20,7 @@ export const tabContents: TabContent[] = [
   },
   {
     label: 'Marketplace',
-    content: <div>Konten untuk Marketplace</div>
+    content: <div>Konten untuk Marketplace Kiyta</div>
   },
 ];
 
