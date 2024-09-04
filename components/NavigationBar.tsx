@@ -1,5 +1,6 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,170 +11,111 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
 
 import Link from "next/link";
-import { Ellipsis, Megaphone, Search } from "lucide-react";
+import { ChevronDown, Ellipsis, Megaphone, Search } from "lucide-react";
+import { useProdukHover } from "@/app/context/ProdukHoverContext";
+import { Button } from "./ui/button";
+import axios from "axios";
+import { apiEndpoints } from "@/app/api/api";
+import { cn } from "@/lib/utils";
+
+
+interface contentNavbarGeneral{
+  id:number,
+  kode:string,
+  kode_main_navbar:string,	
+  nama:string,	
+  link_to:string;	
+}
+interface NavbarItem {
+  id: number;
+  kode_navbar: number;
+  nama: string;
+  status: string;
+  link_to:string;
+  content_navbar_general:contentNavbarGeneral[]; // Add status to the interface
+}
 
 export default function NavigationBar() {
-  const components: { title: string; href: string; description: string }[] = [
-    {
-      title: "Alert Dialog",
-      href: "/docs/primitives/alert-dialog",
-      description:
-        "A modal dialog that interrupts the user with important content and expects a response.",
-    },
-    {
-      title: "Hover Card",
-      href: "/docs/primitives/hover-card",
-      description:
-        "For sighted users to preview content available behind a link.",
-    },
-    {
-      title: "Progress",
-      href: "/docs/primitives/progress",
-      description:
-        "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-    },
-    {
-      title: "Scroll-area",
-      href: "/docs/primitives/scroll-area",
-      description: "Visually or semantically separates content.",
-    },
-    {
-      title: "Tabs",
-      href: "/docs/primitives/tabs",
-      description:
-        "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-    },
-    {
-      title: "Tooltip",
-      href: "/docs/primitives/tooltip",
-      description:
-        "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-    },
-  ];
-  const ListItem = React.forwardRef<
-    React.ElementRef<"a">,
-    React.ComponentPropsWithoutRef<"a">
-  >(({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          >
-            <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-              {children}
-            </p>
-          </a>
-        </NavigationMenuLink>
-      </li>
-    );
-  });
-  ListItem.displayName = "ListItem";
+  const [open, setOpen] = useState(false);
+  const { setIsProdukHovered } = useProdukHover();
+  const [navbar, setNavbar] = useState<NavbarItem[]>([]);
+  useEffect(() => {
+    axios
+      .get(apiEndpoints.allNavbar)
+      .then((response) => {
+        setNavbar(response.data); // Update state with fetched navbar data
+        console.log(response.data); // Log data to verify
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const handleStateOpen = () => {
+    if (open !== true) {
+      setIsProdukHovered(true);
+      setOpen(true);
+    } else {
+      setIsProdukHovered(false);
+      setOpen(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-6 shadow-md w-full h-full">
       <div className="col-span-1 flex justify-center">
         <Image src="/logoGodong.svg" width={128} height={29} alt="Image" />
       </div>
-      <div className="col-span-4 flex items-center ">
-        <NavigationMenu className="ml-5">
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-lg">
-                Produk
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                  <li className="row-span-3">
-                    <NavigationMenuLink asChild>
-                      <a
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                        href="/"
-                      >
-                        <div className="mb-2 mt-4 text-lg font-medium">
-                          shadcn/ui
-                        </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
-                          Beautifully designed components built with Radix UI
-                          and Tailwind CSS.
-                        </p>
-                      </a>
-                    </NavigationMenuLink>
-                  </li>
-                  <ListItem href="/docs" title="Introduction">
-                    Re-usable components built using Radix UI and Tailwind CSS.
-                  </ListItem>
-                  <ListItem href="/docs/installation" title="Installation">
-                    How to install dependencies and structure your app.
-                  </ListItem>
-                  <ListItem
-                    href="/docs/primitives/typography"
-                    title="Typography"
-                  >
-                    Styles for headings, paragraphs, lists...etc
-                  </ListItem>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/docs" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  <div className="text-lg">
-                    Pelanggan
-                  </div>
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="text-lg">
-                Perusahaan
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                  {components.map((component) => (
-                    <ListItem
-                      key={component.title}
-                      title={component.title}
-                      href={component.href}
+      <div className="col-span-4 flex items-center">
+        <div>
+          <NavigationMenu>
+            <NavigationMenuList>
+              {navbar.map((navItem) =>
+                // Check the status of the navbar item
+                navItem.status === "main" ? (
+                  <NavigationMenuItem key={navItem.id}>
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleStateOpen()}
+                      className="text-[17px] font-normal m-0"
                     >
-                      {component.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
-                className="text-lg p-0 m-0"
-                showArrow={false}
-              >
-                <Ellipsis className="p-0 m-0" />
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                  {components.map((component) => (
-                    <ListItem
-                      key={component.title}
-                      title={component.title}
-                      href={component.href}
-                    >
-                      {component.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+                      {navItem.nama}
+                      <ChevronDown
+                        className={
+                          open
+                            ? "relative top-[1px] ml-1 h-5 w-5 transition duration-200 rotate-180"
+                            : "relative top-[1px] ml-1 h-5 w-5  transition duration-200"
+                        }
+                      />
+                    </Button>
+                  </NavigationMenuItem>
+                ) : navItem.status === "general" && navItem.content_navbar_general.length > 0 ? (
+                  <NavigationMenuItem key={navItem.id}>
+                    <NavigationMenuTrigger onMouseEnter={() => {setIsProdukHovered(false); setOpen(false)}} className="text-[17px] font-normal " >
+                      {navItem.nama}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid w-[200px] gap-3 p-3 ">
+                       {navItem.content_navbar_general.map((content) => (
+                        <ListItem key={content.id} title={content.nama} href={content.link_to}>
+                        </ListItem>
+                       ))}
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : navItem.status === "general" && navItem.content_navbar_general.length <= 0 ?(
+                  <NavigationMenuItem key={navItem.id}>
+                    <NavigationMenuTrigger showArrow={false} className="text-[17px] font-normal">
+                      {navItem.nama}
+                    </NavigationMenuTrigger>
+                  </NavigationMenuItem>
+                ):null // Render nothing if neither "main" nor "general"
+              )}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
       </div>
       <div className="col-span-1 pr-10">
         <div className="flex h-full gap-4 w-full justify-end items-center flex-row">
@@ -185,3 +127,28 @@ export default function NavigationBar() {
     </div>
   );
 }
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-[13px] font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  )
+})
+ListItem.displayName = "ListItem"

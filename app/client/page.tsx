@@ -1,12 +1,19 @@
 "use client"
-import React from 'react'
-import NavbarProduct from '@/components/NavbarProduct'
-import { tabContents } from '@/components/ContentProduct'
-
+import React, { useEffect } from 'react'
+import { useProdukHover } from '../context/ProdukHoverContext'
+import ProductContent from '@/components/ProductContent';
+import {apiEndpoints} from '../api/api'
+import axios from "axios";
 export default function Home() {
+const { isProdukHovered } = useProdukHover();
   return (
-    <div>
-      <NavbarProduct tabsData={tabContents} />
+    <div className='w-full h-full'>
+      {isProdukHovered ?
+       <div className='w-full h-full overflow-hidden'>
+        <ProductContent/>
+       </div> 
+       : 
+       <div className='w-full h-full '>Uhuy</div>}
     </div>
   )
 }
