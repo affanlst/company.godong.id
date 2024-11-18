@@ -1,5 +1,9 @@
 import NavigationBar from "@/components/NavigationBar";
 import { ProdukHoverProvider } from '../context/ProdukHoverContext';
+
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "primereact/resources/primereact.min.css";
+
 export default function ClientLayout({
  children
 }: {
@@ -12,7 +16,7 @@ export default function ClientLayout({
             <div className="fixed bg-white w-full h-[75px]">
                 <NavigationBar/>
             </div>
-            <div className="mt-[75px] h-full w-full">
+            <div className="mt-[75px] h-full w-full overflow-x-hidden overflow-y-auto">
                 {children}
             </div>
           </ProdukHoverProvider>
