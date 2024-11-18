@@ -13,7 +13,7 @@ const { isProdukHovered } = useProdukHover();
         <ProductContent/>
        </div> 
        : 
-       <div className='w-full h-full '>Uhuy</div>}
+       <div className='w-full h-full '></div>}
     </div>
   )
 }

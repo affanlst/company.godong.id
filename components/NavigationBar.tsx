@@ -111,7 +111,7 @@ export default function NavigationBar() {
                       {navItem.nama}
                     </NavigationMenuTrigger>
                   </NavigationMenuItem>
-                ):null // Render nothing if neither "main" nor "general"
+                ):null // Render nothing if neither "main"3 nor "general"
               )}
             </NavigationMenuList>
           </NavigationMenu>
