@@ -81,6 +81,7 @@ export default function NavigationBar() {
                       onClick={() => handleStateOpen()}
                       className="text-[17px] font-normal m-0"
                     >
+                      {/* //TODO: Tambahkan input search disini */}
                       {navItem.nama}
                       <ChevronDown
                         className={
